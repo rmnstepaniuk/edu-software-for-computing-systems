@@ -40,13 +40,6 @@ public class Parser {
         return peek(0);
     }
 
-    public SyntaxToken[] getTokens() {
-        return tokens;
-    }
-    public int getPosition() {
-        return position;
-    }
-
     private SyntaxToken nextToken() {
         SyntaxToken current = current();
         position++;
@@ -68,7 +61,7 @@ public class Parser {
         ExpressionNode left = parsePrimaryExpression();
 
         while (true) {
-            int precedence = getBinaryOperatorPrecedence(current().getType());
+            int precedence = SyntaxFacts.getBinaryOperatorPrecedence(current().getType());
             if (precedence == 0 || precedence <= parentPrecedence) break;
             SyntaxToken operatorToken = nextToken();
             ExpressionNode right = parseExpression(precedence);
@@ -76,14 +69,6 @@ public class Parser {
 
         }
         return left;
-    }
-
-    private static int getBinaryOperatorPrecedence(SyntaxType type) {
-        return switch (type) {
-            case MULTIPLY_TOKEN, DIVIDE_TOKEN -> 2;
-            case PLUS_TOKEN, MINUS_TOKEN -> 1;
-            default -> 0;
-        };
     }
 
     private ExpressionNode parsePrimaryExpression() {
@@ -100,6 +85,12 @@ public class Parser {
         return new LiteralExpressionNode(numberToken);
     }
 
+    public SyntaxToken[] getTokens() {
+        return tokens;
+    }
+    public int getPosition() {
+        return position;
+    }
     public List<String> getDiagnostics() {
         return diagnostics;
     }
