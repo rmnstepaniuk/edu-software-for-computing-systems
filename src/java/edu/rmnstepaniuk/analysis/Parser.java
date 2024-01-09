@@ -59,44 +59,38 @@ public class Parser {
     }
 
     public SyntaxTree parse() {
-        ExpressionNode expression = parseTerm();
+        ExpressionNode expression = parseExpression(0);
         SyntaxToken endOfFileToken = matchToken(SyntaxType.END_OF_FILE_TOKEN);
         return new SyntaxTree(diagnostics, expression, endOfFileToken);
     }
 
-    private ExpressionNode parseTerm() {
-        ExpressionNode left = parseFactor();
+    private ExpressionNode parseExpression(int parentPrecedence) {
+        ExpressionNode left = parsePrimaryExpression();
 
-        while (current().getType() == SyntaxType.PLUS_TOKEN ||
-                current().getType() == SyntaxType.MINUS_TOKEN)
-        {
+        while (true) {
+            int precedence = getBinaryOperatorPrecedence(current().getType());
+            if (precedence == 0 || precedence <= parentPrecedence) break;
             SyntaxToken operatorToken = nextToken();
-            ExpressionNode right = parseFactor();
-
+            ExpressionNode right = parseExpression(precedence);
             left = new BinaryExpressionNode(left, operatorToken, right);
+
         }
         return left;
     }
 
-    private ExpressionNode parseFactor() {
-        ExpressionNode left = parsePrimaryExpression();
-
-        while (current().getType() == SyntaxType.MULTIPLY_TOKEN ||
-                current().getType() == SyntaxType.DIVIDE_TOKEN)
-        {
-            SyntaxToken operatorToken = nextToken();
-            ExpressionNode right = parsePrimaryExpression();
-
-            left = new BinaryExpressionNode(left, operatorToken, right);
-        }
-        return left;
+    private static int getBinaryOperatorPrecedence(SyntaxType type) {
+        return switch (type) {
+            case MULTIPLY_TOKEN, DIVIDE_TOKEN -> 2;
+            case PLUS_TOKEN, MINUS_TOKEN -> 1;
+            default -> 0;
+        };
     }
 
     private ExpressionNode parsePrimaryExpression() {
 
         if (current().getType() == SyntaxType.OPEN_PARENTHESIS_TOKEN) {
             SyntaxToken left = nextToken();
-            ExpressionNode expression = parseTerm();
+            ExpressionNode expression = parseExpression(0);
             SyntaxToken right = matchToken(SyntaxType.CLOSE_PARENTHESIS_TOKEN);
             return new ParenthesizedExpressionNode(left, expression, right);
         }
