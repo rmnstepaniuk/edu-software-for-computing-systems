@@ -44,7 +44,7 @@ public class Parser {
     }
     private SyntaxToken matchToken(SyntaxType type) {
         if (current().getType() == type) return nextToken();
-        this.diagnostics.add("ERROR: Unexpected token <"+current().getType()+"> at position " + position + ", expected <"+type+">");
+        this.diagnostics.add("SYNTAX ERROR: Unexpected token <"+current().getType()+"> at position " + position + ", expected <"+type+">");
         return new SyntaxToken(null, current().getPosition(), current().getType(), null);
     }
 
@@ -77,17 +77,31 @@ public class Parser {
     }
 
     private ExpressionNode parsePrimaryExpression() {
-
         if (current().getType() == SyntaxType.OPEN_PARENTHESIS_TOKEN) {
-            SyntaxToken left = nextToken();
-            ExpressionNode expression = parseExpression(0);
-            SyntaxToken right = matchToken(SyntaxType.CLOSE_PARENTHESIS_TOKEN);
-            return new ParenthesizedExpressionNode(left, expression, right);
+            return parseParenthesizedExpression();
+        } else if (current().getType() == SyntaxType.SIN_FUNCTION_TOKEN
+                || current().getType() == SyntaxType.COS_FUNCTION_TOKEN
+                || current().getType() == SyntaxType.TAN_FUNCTION_TOKEN) {
+            return parseFunctionCall();
+        } else {
+            SyntaxToken numberToken = matchToken(SyntaxType.NUMBER_TOKEN);
+            return new LiteralExpressionNode(numberToken);
         }
+    }
 
+    private ExpressionNode parseParenthesizedExpression() {
+        SyntaxToken left = matchToken(SyntaxType.OPEN_PARENTHESIS_TOKEN);
+        ExpressionNode expression = parseExpression(0);
+        SyntaxToken right = matchToken(SyntaxType.CLOSE_PARENTHESIS_TOKEN);
+        return new ParenthesizedExpressionNode(left, expression, right);
+    }
 
-        SyntaxToken numberToken = matchToken(SyntaxType.NUMBER_TOKEN);
-        return new LiteralExpressionNode(numberToken);
+    private ExpressionNode parseFunctionCall() {
+        SyntaxToken functionToken = nextToken();
+        SyntaxToken leftParenthesisToken = matchToken(SyntaxType.OPEN_PARENTHESIS_TOKEN);
+        ExpressionNode argument = parseExpression(0);
+        SyntaxToken rightParenthesisToken = matchToken(SyntaxType.CLOSE_PARENTHESIS_TOKEN);
+        return new FunctionCallExpressionNode(functionToken, leftParenthesisToken, argument, rightParenthesisToken);
     }
 
     public SyntaxToken[] getTokens() {

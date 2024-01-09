@@ -39,6 +39,19 @@ public record Evaluator(ExpressionNode root) {
                 ParenthesizedExpressionNode p = (ParenthesizedExpressionNode) node;
                 return evaluateExpression(p.getExpression());
             }
+            case FUNCTION_CALL_EXPRESSION -> {
+                FunctionCallExpressionNode f = (FunctionCallExpressionNode) node;
+                SyntaxType functionType = f.getFunctionToken().getType();
+                ExpressionNode argument = f.getArgument();
+
+                float argumentValue = evaluateExpression(argument);
+                return switch (functionType) {
+                    case SIN_FUNCTION_TOKEN -> (float) Math.sin(argumentValue);
+                    case COS_FUNCTION_TOKEN -> (float) Math.cos(argumentValue);
+                    case TAN_FUNCTION_TOKEN -> (float) Math.tan(argumentValue);
+                    default -> throw new Exception("Unexpected function call " + functionType);
+                };
+            }
             default -> throw new Exception("Unexpected node " + node.getType());
         }
     }

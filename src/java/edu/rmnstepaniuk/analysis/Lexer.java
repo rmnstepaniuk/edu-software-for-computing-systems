@@ -1,13 +1,23 @@
 package edu.rmnstepaniuk.analysis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Lexer {
     private final String text;
     private int position;
 
     private final List<String> diagnostics = new ArrayList<>();
+
+    private static final Map<String, SyntaxType> FUNCTION_KEYWORDS = new HashMap<>();
+
+    static {
+        FUNCTION_KEYWORDS.put("sin", SyntaxType.SIN_FUNCTION_TOKEN);
+        FUNCTION_KEYWORDS.put("cos", SyntaxType.COS_FUNCTION_TOKEN);
+        FUNCTION_KEYWORDS.put("tan", SyntaxType.TAN_FUNCTION_TOKEN);
+    }
 
     public Lexer(String text) {
         this.text = text;
@@ -36,9 +46,23 @@ public class Lexer {
                  float value = Float.parseFloat(txt);
                  return new SyntaxToken(txt, start, SyntaxType.NUMBER_TOKEN, value);
              } else {
-                 diagnostics.add("The number " + txt + " isn't a valid Float");
+                 diagnostics.add("LEXICAL ERROR: The number " + txt + " isn't a valid Float");
                  return new SyntaxToken(txt, position++, SyntaxType.BAD_TOKEN, null);
              }
+        }
+
+        if (Character.isLetter(currentChar())) {
+            int start = position;
+            while (Character.isLetter(currentChar())) next();
+            txt = text.substring(start, position);
+
+            SyntaxType functionTokenType = FUNCTION_KEYWORDS.get(txt.toLowerCase());
+            if (functionTokenType != null) {
+                return new SyntaxToken(txt, start, functionTokenType);
+            }
+
+            diagnostics.add("LEXICAL ERROR: Unrecognized identifier: '" + txt + "' at position " + start);
+            return new SyntaxToken(txt, start, SyntaxType.BAD_TOKEN, null);
         }
 
         if (Character.isWhitespace(currentChar())) {
@@ -60,7 +84,7 @@ public class Lexer {
         else if (currentChar() == ')')
             return new SyntaxToken(")", position++, SyntaxType.CLOSE_PARENTHESIS_TOKEN, null);
 
-        diagnostics.add("ERROR: bad character input: '" + currentChar() + "' at position " + position);
+        diagnostics.add("LEXICAL ERROR: bad character input: '" + currentChar() + "' at position " + position);
         return new SyntaxToken(String.valueOf(text.charAt(position)), position++, SyntaxType.BAD_TOKEN, null);
     }
 

@@ -46,9 +46,6 @@ public class Handler {
     }
 
     static void prettyPrint(SyntaxNode node, String indent) {
-        // │
-        // ├──
-        // └──
         System.out.print("\u001B[37m");
         String marker = "└──";
 
