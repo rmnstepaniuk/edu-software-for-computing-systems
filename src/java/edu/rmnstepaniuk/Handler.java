@@ -1,6 +1,6 @@
 package edu.rmnstepaniuk;
 
-import edu.rmnstepaniuk.analysis.Evaluator;
+// import edu.rmnstepaniuk.analysis.Evaluator;
 import edu.rmnstepaniuk.analysis.nodes.SyntaxNode;
 import edu.rmnstepaniuk.analysis.SyntaxToken;
 import edu.rmnstepaniuk.analysis.SyntaxTree;
@@ -29,6 +29,7 @@ public class Handler {
             prettyPrint(syntaxTree.getRoot(), "");
 
             if (syntaxTree.getDiagnostics().isEmpty()) {
+/*
                 Evaluator evaluator = new Evaluator(syntaxTree.getRoot());
                 try {
                     float result = evaluator.evaluate();
@@ -36,6 +37,8 @@ public class Handler {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+ */
+                System.out.println("No errors found");
             } else {
                 for (String diagnosis : syntaxTree.getDiagnostics()) {
                     System.out.println("\u001B[31m" + diagnosis);

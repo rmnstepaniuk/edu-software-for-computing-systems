@@ -83,6 +83,8 @@ public class Parser {
                 || current().getType() == SyntaxType.COS_FUNCTION_TOKEN
                 || current().getType() == SyntaxType.TAN_FUNCTION_TOKEN) {
             return parseFunctionCall();
+        } else if (current().getType() == SyntaxType.IDENTIFIER_TOKEN) {
+            return parseIdentifier();
         } else {
             SyntaxToken numberToken = matchToken(SyntaxType.NUMBER_TOKEN);
             return new LiteralExpressionNode(numberToken);
@@ -102,6 +104,10 @@ public class Parser {
         ExpressionNode argument = parseExpression(0);
         SyntaxToken rightParenthesisToken = matchToken(SyntaxType.CLOSE_PARENTHESIS_TOKEN);
         return new FunctionCallExpressionNode(functionToken, leftParenthesisToken, argument, rightParenthesisToken);
+    }
+    private ExpressionNode parseIdentifier() {
+        SyntaxToken identifierToken = matchToken(SyntaxType.IDENTIFIER_TOKEN);
+        return new IdentifierExpressionNode(identifierToken);
     }
 
     public SyntaxToken[] getTokens() {
