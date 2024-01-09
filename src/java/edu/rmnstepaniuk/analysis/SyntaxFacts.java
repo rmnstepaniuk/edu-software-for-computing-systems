@@ -8,4 +8,10 @@ public class SyntaxFacts {
             default -> 0;
         };
     }
+    public static int getUnaryOperatorPrecedence(SyntaxType type) {
+        return switch (type) {
+            case PLUS_TOKEN, MINUS_TOKEN -> 3;
+            default -> 0;
+        };
+    }
 }

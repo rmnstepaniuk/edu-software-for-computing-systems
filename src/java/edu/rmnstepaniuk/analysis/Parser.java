@@ -1,9 +1,6 @@
 package edu.rmnstepaniuk.analysis;
 
-import edu.rmnstepaniuk.analysis.nodes.BinaryExpressionNode;
-import edu.rmnstepaniuk.analysis.nodes.ExpressionNode;
-import edu.rmnstepaniuk.analysis.nodes.LiteralExpressionNode;
-import edu.rmnstepaniuk.analysis.nodes.ParenthesizedExpressionNode;
+import edu.rmnstepaniuk.analysis.nodes.*;
 
 import java.util.ArrayList;
 
@@ -58,7 +55,15 @@ public class Parser {
     }
 
     private ExpressionNode parseExpression(int parentPrecedence) {
-        ExpressionNode left = parsePrimaryExpression();
+        ExpressionNode left;
+        int unaryOperatorPrecedence = SyntaxFacts.getUnaryOperatorPrecedence(current().getType());
+        if (unaryOperatorPrecedence != 0 && parentPrecedence <= unaryOperatorPrecedence) {
+            SyntaxToken operatorToken = nextToken();
+            ExpressionNode operand = parseExpression(unaryOperatorPrecedence);
+            left = new UnaryExpressionNode(operatorToken, operand);
+        } else {
+            left = parsePrimaryExpression();
+        }
 
         while (true) {
             int precedence = SyntaxFacts.getBinaryOperatorPrecedence(current().getType());

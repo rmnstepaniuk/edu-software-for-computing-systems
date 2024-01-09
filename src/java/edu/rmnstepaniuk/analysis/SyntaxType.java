@@ -15,6 +15,7 @@ public enum SyntaxType {
 
     // Expressions
     LITERAL_EXPRESSION,
+    UNARY_EXPRESSION,
     BINARY_EXPRESSION,
     PARENTHESIZED_EXPRESSION
 }

@@ -1,9 +1,6 @@
 package edu.rmnstepaniuk.analysis;
 
-import edu.rmnstepaniuk.analysis.nodes.BinaryExpressionNode;
-import edu.rmnstepaniuk.analysis.nodes.ExpressionNode;
-import edu.rmnstepaniuk.analysis.nodes.LiteralExpressionNode;
-import edu.rmnstepaniuk.analysis.nodes.ParenthesizedExpressionNode;
+import edu.rmnstepaniuk.analysis.nodes.*;
 
 public record Evaluator(ExpressionNode root) {
 
@@ -16,6 +13,14 @@ public record Evaluator(ExpressionNode root) {
             case LITERAL_EXPRESSION -> {
                 LiteralExpressionNode n = (LiteralExpressionNode) node;
                 return (float) n.getLiteralToken().getValue();
+            }
+            case UNARY_EXPRESSION -> {
+                UnaryExpressionNode u = (UnaryExpressionNode) node;
+                float operand = evaluateExpression(u.getOperand());
+                SyntaxType operatorToken = u.getOperatorToken().getType();
+                if (operatorToken == SyntaxType.PLUS_TOKEN) return operand;
+                else if (operatorToken == SyntaxType.MINUS_TOKEN) return -operand;
+                else throw new Exception("Unexpected unary operator " + operatorToken);
             }
             case BINARY_EXPRESSION -> {
                 BinaryExpressionNode b = (BinaryExpressionNode) node;
