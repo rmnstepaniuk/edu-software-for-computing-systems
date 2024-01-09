@@ -23,9 +23,6 @@ public class Lexer {
     }
 
     public SyntaxToken lex() {
-        // <number>
-        // + - * / ( )
-        // <whitespace>
         String txt;
 
         if (position > text.length() - 1)
@@ -33,7 +30,7 @@ public class Lexer {
 
          if (Character.isDigit(currentChar()) || currentChar() == '.') {
             int start = position;
-            while (Character.isDigit(currentChar())) next();
+            while (Character.isDigit(currentChar()) || currentChar() == '.') next();
             txt = text.substring(start, position);
              if (tryParse(txt)) {
                  float value = Float.parseFloat(txt);
@@ -63,7 +60,7 @@ public class Lexer {
         else if (currentChar() == ')')
             return new SyntaxToken(")", position++, SyntaxType.CLOSE_PARENTHESIS_TOKEN, null);
 
-        diagnostics.add("ERROR: bad character input: '" + currentChar() + "'");
+        diagnostics.add("ERROR: bad character input: '" + currentChar() + "' at position " + position);
         return new SyntaxToken(String.valueOf(text.charAt(position)), position++, SyntaxType.BAD_TOKEN, null);
     }
 
@@ -81,7 +78,7 @@ public class Lexer {
 
     private boolean tryParse(String value) {
         try {
-            float result = Float.parseFloat(value);
+            Float.parseFloat(value);
             return true;
         } catch (NumberFormatException e) {
             return false;

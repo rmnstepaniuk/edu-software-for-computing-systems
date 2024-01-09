@@ -44,7 +44,7 @@ public class Parser {
     }
     private SyntaxToken matchToken(SyntaxType type) {
         if (current().getType() == type) return nextToken();
-        this.diagnostics.add("ERROR: Unexpected token <"+current().getType()+">, expected <"+type+">");
+        this.diagnostics.add("ERROR: Unexpected token <"+current().getType()+"> at position " + position + ", expected <"+type+">");
         return new SyntaxToken(null, current().getPosition(), current().getType(), null);
     }
 
