@@ -31,7 +31,7 @@ public class Handler {
             if (syntaxTree.getDiagnostics().isEmpty()) {
                 Evaluator evaluator = new Evaluator(syntaxTree.getRoot());
                 try {
-                    int result = evaluator.evaluate();
+                    float result = evaluator.evaluate();
                     System.out.println("= " + result);
                 } catch (Exception e) {
                     e.printStackTrace();

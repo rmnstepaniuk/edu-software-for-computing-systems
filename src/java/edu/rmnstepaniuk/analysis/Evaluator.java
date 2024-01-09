@@ -7,20 +7,20 @@ import edu.rmnstepaniuk.analysis.nodes.ParenthesizedExpressionNode;
 
 public record Evaluator(ExpressionNode root) {
 
-    public int evaluate() throws Exception {
+    public float evaluate() throws Exception {
         return evaluateExpression(this.root);
     }
 
-    private int evaluateExpression(ExpressionNode node) throws Exception {
+    private float evaluateExpression(ExpressionNode node) throws Exception {
         switch (node.getType()) {
             case LITERAL_EXPRESSION -> {
                 LiteralExpressionNode n = (LiteralExpressionNode) node;
-                return (int) n.getLiteralToken().getValue();
+                return (float) n.getLiteralToken().getValue();
             }
             case BINARY_EXPRESSION -> {
                 BinaryExpressionNode b = (BinaryExpressionNode) node;
-                int left = evaluateExpression(b.getLeft());
-                int right = evaluateExpression(b.getRight());
+                float left = evaluateExpression(b.getLeft());
+                float right = evaluateExpression(b.getRight());
                 SyntaxType operatorToken = b.getOperatorToken().getType();
                 return switch (operatorToken) {
                     case PLUS_TOKEN -> left + right;

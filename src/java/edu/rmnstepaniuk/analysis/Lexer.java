@@ -31,15 +31,15 @@ public class Lexer {
         if (position > text.length() - 1)
             return new SyntaxToken("\0", position, SyntaxType.END_OF_FILE_TOKEN, null);
 
-         if (Character.isDigit(currentChar())) {
+         if (Character.isDigit(currentChar()) || currentChar() == '.') {
             int start = position;
             while (Character.isDigit(currentChar())) next();
             txt = text.substring(start, position);
              if (tryParse(txt)) {
-                 int value = Integer.parseInt(txt);
+                 float value = Float.parseFloat(txt);
                  return new SyntaxToken(txt, start, SyntaxType.NUMBER_TOKEN, value);
              } else {
-                 diagnostics.add("The number " + txt + " isn't a valid Integer");
+                 diagnostics.add("The number " + txt + " isn't a valid Float");
                  return new SyntaxToken(txt, position++, SyntaxType.BAD_TOKEN, null);
              }
         }
@@ -81,7 +81,7 @@ public class Lexer {
 
     private boolean tryParse(String value) {
         try {
-            int result = Integer.parseInt(value);
+            float result = Float.parseFloat(value);
             return true;
         } catch (NumberFormatException e) {
             return false;
