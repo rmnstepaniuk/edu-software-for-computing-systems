@@ -1,11 +1,8 @@
 package edu.rmnstepaniuk;
 
 // import edu.rmnstepaniuk.analysis.Evaluator;
-import edu.rmnstepaniuk.analysis.nodes.SyntaxNode;
-import edu.rmnstepaniuk.analysis.SyntaxToken;
 import edu.rmnstepaniuk.analysis.SyntaxTree;
 
-import java.util.Iterator;
 import java.util.Scanner;
 
 public class Handler {
@@ -26,13 +23,12 @@ public class Handler {
             }
             syntaxTree = SyntaxTree.parse(line);
 
-            prettyPrint(syntaxTree.getRoot(), "");
+            Printer.printSyntaxTree(syntaxTree.getRoot(), "");
 
             if (syntaxTree.getDiagnostics().isEmpty()) {
                 System.out.println("No errors found");
 
-                BinaryTree binaryTree = new BinaryTree(syntaxTree.getRoot());
-                binaryTree.printBinaryTree();
+                Printer.printBinaryTree(syntaxTree.getRoot(), "");
 /*
                 Evaluator evaluator = new Evaluator(syntaxTree.getRoot());
                 try {
@@ -49,27 +45,5 @@ public class Handler {
                 }
             }
         }
-    }
-
-    static void prettyPrint(SyntaxNode node, String indent) {
-        System.out.print("\u001B[37m");
-        String marker = "└──";
-
-        System.out.print(indent);
-        System.out.print(marker);
-        System.out.print(node.getType());
-
-        if (node instanceof SyntaxToken t && t.getValue() != null) {
-            System.out.print(" ");
-            System.out.print(t.getValue());
-        }
-        System.out.println();
-        indent += "   ";
-
-        for (Iterator<SyntaxNode> it = node.getChildren(); it.hasNext(); ) {
-            SyntaxNode child = it.next();
-            prettyPrint(child, indent);
-        }
-        System.out.print("\u001B[0m");
     }
 }

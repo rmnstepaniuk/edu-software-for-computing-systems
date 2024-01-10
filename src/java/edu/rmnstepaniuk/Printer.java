@@ -1,14 +1,33 @@
 package edu.rmnstepaniuk;
 
+import edu.rmnstepaniuk.analysis.SyntaxToken;
 import edu.rmnstepaniuk.analysis.nodes.*;
 
-public record BinaryTree(ExpressionNode root) {
+import java.util.Iterator;
 
-    public void printBinaryTree() {
-        printBinaryTree(root, "");
+public class Printer {
+    public static void printSyntaxTree(SyntaxNode node, String indent) {
+        System.out.print("\u001B[37m");
+        String marker = "└──";
+
+        System.out.print(indent);
+        System.out.print(marker);
+        System.out.print(node.getType());
+
+        if (node instanceof SyntaxToken t && t.getValue() != null) {
+            System.out.print(" ");
+            System.out.print(t.getValue());
+        }
+        System.out.println();
+        indent += "   ";
+
+        for (Iterator<SyntaxNode> it = node.getChildren(); it.hasNext(); ) {
+            SyntaxNode child = it.next();
+            printSyntaxTree(child, indent);
+        }
+        System.out.print("\u001B[0m");
     }
-
-    private void printBinaryTree(ExpressionNode node, String indent) {
+    public static void printBinaryTree(ExpressionNode node, String indent) {
         if (node == null) {
             return;
         }
