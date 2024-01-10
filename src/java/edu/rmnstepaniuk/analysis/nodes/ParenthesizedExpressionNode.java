@@ -17,8 +17,6 @@ public final class ParenthesizedExpressionNode extends ExpressionNode {
         this.closeParenthesisToken = closeParenthesisToken;
     }
 
-
-
     public SyntaxToken getOpenParenthesisToken() {
         return openParenthesisToken;
     }

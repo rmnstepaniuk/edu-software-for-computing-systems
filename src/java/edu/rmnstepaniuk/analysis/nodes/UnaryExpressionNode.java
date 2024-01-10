@@ -31,5 +31,3 @@ public class UnaryExpressionNode extends ExpressionNode {
         return Arrays.asList(operatorToken, operand).iterator();
     }
 }
-
-

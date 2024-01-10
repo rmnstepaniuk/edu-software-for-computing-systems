@@ -17,13 +17,13 @@ public final class BinaryExpressionNode extends ExpressionNode {
     }
 
     public ExpressionNode getLeft() {
-        return left;
+        return this.left;
     }
     public ExpressionNode getRight() {
-        return right;
+        return this.right;
     }
     public SyntaxToken getOperatorToken() {
-        return operatorToken;
+        return this.operatorToken;
     }
 
     @Override
