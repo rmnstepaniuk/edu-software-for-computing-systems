@@ -29,6 +29,10 @@ public class Handler {
             prettyPrint(syntaxTree.getRoot(), "");
 
             if (syntaxTree.getDiagnostics().isEmpty()) {
+                System.out.println("No errors found");
+
+                BinaryTree binaryTree = new BinaryTree(syntaxTree.getRoot());
+                binaryTree.printBinaryTree();
 /*
                 Evaluator evaluator = new Evaluator(syntaxTree.getRoot());
                 try {
@@ -38,7 +42,6 @@ public class Handler {
                     e.printStackTrace();
                 }
  */
-                System.out.println("No errors found");
             } else {
                 for (String diagnosis : syntaxTree.getDiagnostics()) {
                     System.out.println("\u001B[31m" + diagnosis);
