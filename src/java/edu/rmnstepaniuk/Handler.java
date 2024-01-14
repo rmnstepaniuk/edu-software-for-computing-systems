@@ -21,14 +21,24 @@ public class Handler {
                 System.out.println("Exiting program");
                 break;
             }
+            if (line.equals("")) {
+                continue;
+            }
             syntaxTree = SyntaxTree.parse(line);
 
             Printer.printSyntaxTree(syntaxTree.getRoot(), "");
 
-            if (syntaxTree.getDiagnostics().isEmpty()) {
-                System.out.println("No errors found");
+            if (!syntaxTree.getDiagnostics().isEmpty()) {
+                for (String diagnosis : syntaxTree.getDiagnostics()) {
+                    System.out.println("\u001B[31m" + diagnosis);
+                    System.out.print("\u001B[0m");
 
-                Printer.printBinaryTree(syntaxTree.getRoot(), "");
+                }
+                continue;
+            }
+            System.out.println("No errors found");
+
+            Printer.printBinaryTree(syntaxTree.getRoot(), "");
 /*
                 Evaluator evaluator = new Evaluator(syntaxTree.getRoot());
                 try {
@@ -38,12 +48,6 @@ public class Handler {
                     e.printStackTrace();
                 }
  */
-            } else {
-                for (String diagnosis : syntaxTree.getDiagnostics()) {
-                    System.out.println("\u001B[31m" + diagnosis);
-                    System.out.print("\u001B[0m");
-                }
-            }
         }
     }
 }
